@@ -17,7 +17,7 @@ public class Tester {
             data = random.ints(size, 10 ,size*2).toArray();
             long startTime = System.nanoTime();
             //Call sort method here
-            QuickSort.sort(data);
+            MergeSort.sort(data);
             long endTime = System.nanoTime();
             long duration = (endTime - startTime);
             avg.add(duration);
