@@ -1,3 +1,9 @@
+The tests are done on int arrays on my local computer without overclocking.
+Specs:
+CPU: Intel i7-4790k
+GPU: NVIDIA GeForce RTX 2080 SUPER
+RAM: 16GB DDR3 1600 MHz
+
 Leaderboards
 
 Java Sorts:
