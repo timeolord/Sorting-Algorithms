@@ -1,4 +1,4 @@
-The tests are done on int arrays on my local computer without overclocking.
+The tests are done on random int arrays on my local computer without overclocking.
 Specs:
 CPU: Intel i7-4790k
 GPU: NVIDIA GeForce RTX 2080 SUPER
