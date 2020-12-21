@@ -6,18 +6,17 @@ import java.util.Random;
 public class Tester {
     public static void main(String[] args){
         Random random = new Random();
-        int size = 10000;
-        int repeat = 10000;
+        int size = 10;
+        int repeat = 100;
         ArrayList<Long> avg = new ArrayList<Long>();
-
-        int[] data = random.ints(size, 10 ,size*2).toArray();
-        //System.out.println(Arrays.toString(data));
+        int[] data = {0};
 
         for (int i = 0; i < repeat; i++) {
-            data = random.ints(size, 10 ,size*2).toArray();
+            data = random.ints(size, 1, size * 2).toArray();
+            //System.out.println(Arrays.toString(data));
             long startTime = System.nanoTime();
             //Call sort method here
-            MergeSort.sort(data);
+            data = BogoSort.sort(data);
             long endTime = System.nanoTime();
             long duration = (endTime - startTime);
             avg.add(duration);
