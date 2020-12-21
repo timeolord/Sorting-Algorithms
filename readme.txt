@@ -3,6 +3,8 @@ Leaderboards
 Java Sorts:
 Insertion Sort took 8.42027524 ms on average of 10000 attempts for a list of size 10000.
 Arrays.Sort took 0.39519412 ms on average of 10000 attempts for a list of size 10000.
-Merge Insertion Sort took 10.08292487 ms on average of 10000 attempts for a list of size 10000 with length <= 25 going into insertion sort. #TODO: Try making the merge multithreaded
+Merge Insertion Sort took Sort took 0.57561484 ms on average of 10000 attempts for a list of size 10000.
 Quick Insertion Sort took 0.4735481739 ms on average of 10000 attempts for a list of size 10000.
 Quick Sort took 0.62018245 ms on average of 10000 attempts for a list of size 10000.
+Quick Random Sort took 0.88167335 ms on average of 10000 attempts for a list of size 10000.
+Merge Sort took 0.78660286 ms on average of 10000 attempts for a list of size 10000.
