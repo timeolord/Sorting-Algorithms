@@ -1,45 +1,21 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-
 public class MergeInsertionSort {
 
-    public static <K, V extends Comparable> ArrayList<K> mergeSort(HashMap<K, V> results) {
-        ArrayList<K> sorted = new ArrayList<>(results.keySet());
-        K[] array = (K[]) sorted.toArray();
-        Object[] tempObj = new Object[array.length];
-        K[] temp = (K[]) tempObj;
-        mergeSort(array,0, array.length-1, results, temp);
-        sorted.clear();
-        sorted.addAll(Arrays.asList(array));
+    public static int[] sort(int[] sorted) {
+        int[] temp = new int[sorted.length];
+        mergeSort(sorted,0, sorted.length-1, temp);
         return sorted;
     }
-
-    private static <K, V extends Comparable> void mergeSort(K[] array, int begin, int end, HashMap<K, V> results, K[] temp){
-        if (end - begin <= 10){
-            insertionSort(array,begin,end,results);
+    private static  void mergeSort(int[] array, int begin, int end, int[] temp){
+        if (end - begin <= 25){
+            InsertionSort.sort(array,begin,end);
             return;
         }
         int mid = (int) Math.floor((begin + end)/2);
-        mergeSort(array,begin,mid,results, temp);
-        mergeSort(array,mid+1,end,results, temp);
-        merge(array,begin,end,results,temp);
+        mergeSort(array,begin,mid, temp);
+        mergeSort(array,mid+1,end, temp);
+        merge(array,begin,end,temp);
     }
-
-    private static <K, V extends Comparable> void insertionSort(K[] array, int begin, int end, HashMap<K, V> results){
-        for (int i = begin+1; i <= end; i++){
-            K temp = array[i];
-            V key = results.get(array[i]);
-            int j = i-1;
-            V compare = results.get(array[j]);
-            while (j >= begin && key.compareTo(compare) > 0){
-                array[j+1] = array[j];
-                j--;
-            }
-            array[j+1] = temp;
-        }
-    }
-    private static <K, V extends Comparable> void merge(K[] array, int begin, int end, HashMap<K, V> results, K[] temp){
+    private static  void merge(int[] array, int begin, int end, int[] temp){
         int size = end - begin;
         int lstart = begin;
         int mid = (begin + end)/2;
@@ -51,9 +27,9 @@ public class MergeInsertionSort {
         int tindex = begin;
 
         while(lindex <= lend && rindex <= rend){
-            V right = results.get(array[rindex]);
-            V left = results.get(array[lindex]);
-            if (left.compareTo(right) > 0){
+            int right = array[rindex];
+            int left = array[lindex];
+            if (left > right){
                 temp[tindex] = array[lindex];
                 lindex++;
             }
