@@ -1,57 +1,64 @@
 
 public class MergeSortMultithreaded {
-    public static int[] sort(int[] sorted) {
-        int[] temp = new int[sorted.length];
-        mergeSort(sorted,0, sorted.length-1, temp);
-        return sorted;
-    }
-    private static void mergeSort(int[] array, int begin, int end, int[] temp){
-        if (begin < end){
-            int mid = (int) Math.floor((begin + end)/2);
-            mergeSort(array,begin,mid, temp);
-            mergeSort(array,mid+1,end, temp);
-            merge(array,begin,end,temp);
+    public static int[] sort(int[] sorted){
+        int[] list1 = new int[sorted.length/2];
+        int[] list2 = new int[sorted.length - sorted.length/2];
+        System.arraycopy(sorted, 0, list1,0,(sorted.length/2));
+        System.arraycopy(sorted, sorted.length/2, list2,0,(sorted.length - sorted.length/2));
+        mergeWorker work1 = new mergeWorker(list1);
+        mergeWorker work2 = new mergeWorker(list2);
+        Thread worker1 = new Thread(work1);
+        Thread worker2 = new Thread(work2);
+        try {
+            worker1.start();
+            worker2.start();
+            worker1.join();
+            worker2.join();
+        }catch (InterruptedException ignored){
+
         }
+        return merge(work1.getArray(), work2.getArray());
     }
-    public class mergeRunnable implements Runnable{
+    private static class mergeWorker implements Runnable{
+        private int[] array;
+        public int[] getArray() {return array;}
+        public mergeWorker(int[] array){
+            this.array=array;
+        }
         public void run(){
-
+            MergeSort.sort(this.array);
         }
     }
-    private static synchronized void merge(int[] array, int begin, int end, int[] temp){
-        int size = end - begin;
-        int lstart = begin;
-        int mid = (begin + end)/2;
-        int rstart = mid+1;
-        int lend = mid;
-        int rend = end;
-        int lindex = lstart;
-        int rindex = rstart;
-        int tindex = begin;
-
-        while(lindex <= lend && rindex <= rend){
-            int right = array[rindex];
-            int left = array[lindex];
-            if (left > right){
-                temp[tindex] = array[lindex];
-                lindex++;
+    public static int[] merge(int[] first, int[] second) {
+        int[] result = new int[first.length + second.length];
+        int i=0;
+        int j=0;
+        int k=0;
+        while (i < first.length && j < second.length) {
+            if (first[i] <= second[j]) {
+                result[k]=first[i];
+                i++;
+                k++;
+            } else {
+                result[k] = second[j];
+                j++;
+                k++;
             }
-            else{
-                temp[tindex] = array[rindex];
-                rindex++;
+            if (i == first.length) {
+                while (j < second.length) {
+                    result[k]=second[j];
+                    k++;
+                    j++;
+                }
             }
-            tindex++;
+            if (j == second.length) {
+                while (i < first.length) {
+                    result[k]=first[i];
+                    k++;
+                    i++;
+                }
+            }
         }
-        while (lindex <= lend){
-            temp[tindex] = array[lindex];
-            tindex++;
-            lindex++;
-        }
-        while (rindex <= rend){
-            temp[tindex] = array[rindex];
-            tindex++;
-            rindex++;
-        }
-        System.arraycopy(temp,begin,array,begin,size+1);
+        return result;
     }
 }

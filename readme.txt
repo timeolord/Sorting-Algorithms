@@ -16,3 +16,4 @@ Quick Random Pivot Sort took 0.88167335 ms on average of 10000 attempts for a li
 Merge Sort took 0.78660286 ms on average of 10000 attempts for a list of size 10000.
 Bogo Sort took 422.944188 ms on average of 100 attempts for a list of size 10.
 Min Heap Sort took 0.73390491 ms on average of 10000 attempts for a list of size 10000.
+Merge Multithreaded Sort took 0.67234724 ms on average of 10000 attempts for a list of size 10000.
