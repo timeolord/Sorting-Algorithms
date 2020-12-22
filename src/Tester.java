@@ -7,11 +7,11 @@ import java.util.function.Function;
 
 public class Tester {
     public static void main(String[] args){
-        int size = 1_0_000;
+        int size = 10000;
         int repeat = 10000;
         boolean print = false;
 
-        test(QuickInsertionSortMultithreaded::sort, size, repeat, print);
+        test(MergeInsertionSortMultithreaded::sort, size, repeat, print);
 
     }
     public static boolean testSorted(int[] array){
