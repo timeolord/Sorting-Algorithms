@@ -7,11 +7,12 @@ import java.util.function.Function;
 
 public class Tester {
     public static void main(String[] args){
-        int size = 10000;
-        int repeat = 10000;
+        int size = 1_000_000;
+        int repeat = 1;
         boolean print = false;
+        boolean multithread = true;
 
-        test(MergeInsertionSortMultithreaded::sort, size, repeat, print);
+        test(MergeSort::sort, size, repeat, print, multithread);
 
     }
     public static boolean testSorted(int[] array){
@@ -38,12 +39,10 @@ public class Tester {
         }
         return sum.divide(BigDecimal.valueOf(array.size()));
     }
-    public static void test(Function<int[], int[]> sort, int size, int repeat){
-        test(sort,size,repeat,false);
-    }
-    public static void test(Function<int[], int[]> sort, int size, int repeat, boolean print){
+    public static void test(Function<int[], int[]> sort, int size, int repeat, boolean print, boolean multithread){
         Random random = new Random();
         ArrayList<Long> avg = new ArrayList<Long>();
+        int threads = 8;
         int[] data = {0};
 
         //tests to see if the sort works
@@ -76,9 +75,16 @@ public class Tester {
                 System.out.println(j + " tests completed.");
                 j += 1000;
             }
+            long startTime;
             data = random.ints(size, 1, size * 2).toArray();
-            long startTime = System.nanoTime();
-            data = sort.apply(data);
+            if (multithread) {
+                startTime = System.nanoTime();
+                data = Multithreader.multithread(data, threads, sort);
+            }
+            else{
+                startTime = System.nanoTime();
+                data = sort.apply(data);
+            }
             long endTime = System.nanoTime();
             long duration = (endTime - startTime);
             avg.add(duration);
