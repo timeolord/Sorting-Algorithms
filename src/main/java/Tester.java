@@ -2,17 +2,18 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 
 public class Tester {
     public static void main(String[] args){
-        int size = 1_000_000;
-        int repeat = 1;
+        int size = 10_000;
+        int repeat = 10_000;
         boolean print = false;
         boolean multithread = true;
 
-        test(MergeSort::sort, size, repeat, print, multithread);
+        test(InsertionSort::sort, size, repeat, print, multithread);
 
     }
     public static boolean testSorted(int[] array){
@@ -23,15 +24,9 @@ public class Tester {
         }
         return true;
     }
-    public static boolean sameList(int[] first, int[] second){
-        if (!testSorted(first)) {
-            QuickInsertionSort.sort(first);
-        }
-        if (!testSorted(second)) {
-            QuickInsertionSort.sort(second);
-        }
-        return Arrays.equals(first, second);
-    }
+    static BiFunction<int[],int[],Boolean> sameList =
+            (first, second) -> Arrays.equals(QuickInsertionSort.sort(first.clone()), QuickInsertionSort.sort(second.clone()));
+
     public static BigDecimal average(ArrayList<Long> array){
         BigDecimal sum = BigDecimal.valueOf(0);
         for (long num : array){
@@ -42,18 +37,23 @@ public class Tester {
     public static void test(Function<int[], int[]> sort, int size, int repeat, boolean print, boolean multithread){
         Random random = new Random();
         ArrayList<Long> avg = new ArrayList<Long>();
-        int threads = 8;
+        int threads = 2;
         int[] data = {0};
 
         //tests to see if the sort works
         int[] numtest = random.ints(10, 1, 10).toArray();
         int[] numtest2 = numtest.clone();
-        numtest2 = sort.apply(numtest2);
+        if (multithread) {
+            numtest2 = Multithreader.multithread(numtest2, threads, sort);
+        }
+        else{
+            numtest2 = sort.apply(numtest2);
+        }
         if (print) {
             System.out.println("Test 1 to see if the sort changes the elements: " + Arrays.toString(numtest));
             System.out.println("Test 2 to see if the sort changes the elements: " + Arrays.toString(numtest2));
         }
-        if (!sameList(numtest,numtest2)){
+        if (!sameList.apply(numtest,numtest2)){
             System.out.println("The sort changed the list. Test Cancelled");
             return;
         }

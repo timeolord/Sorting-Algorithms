@@ -14,16 +14,13 @@ public class MergeSort {
     }
     private static  void merge(int[] array, int begin, int end, int[] temp){
         int size = end - begin;
-        int lstart = begin;
         int mid = (begin + end)/2;
         int rstart = mid+1;
-        int lend = mid;
-        int rend = end;
-        int lindex = lstart;
+        int lindex = begin;
         int rindex = rstart;
         int tindex = begin;
 
-        while(lindex <= lend && rindex <= rend){
+        while(lindex <= mid && rindex <= end){
             int right = array[rindex];
             int left = array[lindex];
             if (left > right){
@@ -36,12 +33,12 @@ public class MergeSort {
             }
             tindex++;
         }
-        while (lindex <= lend){
+        while (lindex <= mid){
             temp[tindex] = array[lindex];
             tindex++;
             lindex++;
         }
-        while (rindex <= rend){
+        while (rindex <= end){
             temp[tindex] = array[rindex];
             tindex++;
             rindex++;
