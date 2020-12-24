@@ -1,14 +1,10 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class MergeSort {
-    public static List<Integer> sort(List<Integer> sorted) {
-        List<Integer> temp =  new ArrayList<>();
-        mergeSort(sorted,0, sorted.size()-1, temp);
+    public static int[] sort(int[] sorted) {
+        int[] temp = new int[sorted.length];
+        mergeSort(sorted,0, sorted.length-1, temp);
         return sorted;
     }
-    private static void mergeSort(List<Integer> array, int begin, int end, List<Integer> temp){
+    private static void mergeSort(int[] array, int begin, int end, int[] temp){
         if (begin < end){
             int mid = (int) Math.floor((begin + end)/2);
             mergeSort(array,begin,mid, temp);
@@ -16,9 +12,7 @@ public class MergeSort {
             merge(array,begin,end,temp);
         }
     }
-    private static void merge(List<Integer> numArray, int begin, int end, List<Integer> tempAr){
-        Integer[] array = numArray.toArray(new Integer[0]);
-        Integer[] temp = tempAr.toArray(new Integer[0]);
+    private static  void merge(int[] array, int begin, int end, int[] temp){
         int size = end - begin;
         int mid = (begin + end)/2;
         int rstart = mid+1;
@@ -50,6 +44,5 @@ public class MergeSort {
             rindex++;
         }
         System.arraycopy(temp,begin,array,begin,size+1);
-        numArray = new ArrayList<>(Arrays.asList(array));
     }
 }

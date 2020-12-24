@@ -1,37 +1,37 @@
 import java.util.Random;
 
 public class QuickSortRandomPivot {
-    private static void quickSort(int[] sortedUrls, int start, int end) {
-        if (sortedUrls.length <= 1) {
+    private static void quickSort(int[] list, int start, int end) {
+        if (list.length <= 1) {
             return;
         }
         Random random = new Random();
-        int pivot = sortedUrls[random.nextInt(end-start)+start];
+        int pivot = list[random.nextInt(end-start)+start];
         int i = start;
         int j = end;
 
         while (i <= j) {
-            while (sortedUrls[i] > pivot) {
+            while (list[i] > pivot) {
                 i++;
             }
-            while (sortedUrls[j] < pivot) {
+            while (list[j] < pivot) {
                 j--;
             }
             if (i <= j) { // swap i and j
-                int tmp = sortedUrls[i];
-                sortedUrls[i] = sortedUrls[j];
-                sortedUrls[j] = tmp;
+                int tmp = list[i];
+                list[i] = list[j];
+                list[j] = tmp;
                 i++;
                 j--;
             }
         }
 
         if (start < j){
-            quickSort(sortedUrls, start, j);
+            quickSort(list, start, j);
 
         }
         if (end > i){
-            quickSort(sortedUrls, i, end);
+            quickSort(list, i, end);
         }
     }
 
