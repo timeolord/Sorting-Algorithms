@@ -1,22 +1,25 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class MergeInsertionSort {
 
-    public static int[] sort(int[] sorted) {
-        int[] temp = new int[sorted.length];
-        mergeSort(sorted,0, sorted.length-1, temp);
+    public static List<Integer> sort(List<Integer> sorted) {
+        List<Integer> temp = new ArrayList<>();
+        mergeSort(sorted,0, sorted.size()-1, temp);
         return sorted;
     }
-    private static  void mergeSort(int[] array, int begin, int end, int[] temp){
+    private static void mergeSort(List<Integer> array, int begin, int end, List<Integer> temp){
         if (end - begin <= 15){
             InsertionSort.sort(array,begin,end);
         }
-        else {
-            int mid = (int) Math.floor((begin + end) / 2);
-            mergeSort(array, begin, mid, temp);
-            mergeSort(array, mid + 1, end, temp);
-            merge(array, begin, end, temp);
+        else{
+            int mid = (int) Math.floor((begin + end)/2);
+            mergeSort(array,begin,mid, temp);
+            mergeSort(array,mid+1,end, temp);
+            merge(array,begin,end,temp);
         }
     }
-    private static  void merge(int[] array, int begin, int end, int[] temp){
+    private static  void merge(List<Integer> array, int begin, int end, List<Integer> temp){
         int size = end - begin;
         int lstart = begin;
         int mid = (begin + end)/2;
@@ -28,25 +31,25 @@ public class MergeInsertionSort {
         int tindex = begin;
 
         while(lindex <= lend && rindex <= rend){
-            int right = array[rindex];
-            int left = array[lindex];
+            int right = array.get(rindex);
+            int left = array.get(lindex);
             if (left > right){
-                temp[tindex] = array[lindex];
+                temp.set(tindex, array.get(lindex));
                 lindex++;
             }
             else{
-                temp[tindex] = array[rindex];
+                temp.set(tindex, array.get(rindex));
                 rindex++;
             }
             tindex++;
         }
         while (lindex <= lend){
-            temp[tindex] = array[lindex];
+            temp.set(tindex, array.get(lindex));
             tindex++;
             lindex++;
         }
         while (rindex <= rend){
-            temp[tindex] = array[rindex];
+            temp.set(tindex, array.get(rindex));
             tindex++;
             rindex++;
         }
