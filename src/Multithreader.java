@@ -1,16 +1,17 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class Multithreader {
-    public static int[] multithread(int[] sorted, int threads, Function<int[],int[]> sort){
-        ArrayList<ArrayList<Integer>> lists = split(sorted, threads);
+    public static List<Integer> multithread(List<Integer> sorted, int threads, Function<List<Integer>,List<Integer>> sort){
+        List<List<Integer>> lists = split(sorted, threads);
         ArrayList<Worker> workers = new ArrayList<>();
         ArrayList<Thread> thread = new ArrayList<>();
-        for (ArrayList<Integer> list : lists){
-            int[] intList = Arrays.stream(list.toArray()).mapToInt(i -> (int) i).toArray();
-            Worker worker = createWorker.apply(intList, sort);
+        for (List<Integer> list : lists){
+            Worker worker = createWorker.apply(list, sort);
             workers.add(worker);
             Thread thread1 = createThread.apply(worker);
             thread.add(thread1);
@@ -22,19 +23,35 @@ public class Multithreader {
             } catch (InterruptedException ignored) {
             }
         }
-        int[] merge = null;
+        List<Integer> merge = Arrays.asList(new Integer[sorted.size()]);
+        boolean first = true;
         for (int i = 1; i < workers.size();i++){
-            int[] temp = merge(workers.get(i-1).getArray(), workers.get(i).getArray());
-            merge = merge(temp, merge);
+            List<Integer> temp;
+            if(workers.get(i-1).getArray().size() == 0) {
+                temp = workers.get(i).getArray();
+            }
+            else if (workers.get(i).getArray().size() == 0){
+                continue;
+            }
+            else {
+                temp = merge(workers.get(i - 1).getArray(), workers.get(i).getArray());
+            }
+            if (!first){
+                merge = merge(temp, merge);
+            }
+            else{
+                merge = temp;
+            }
+            first = false;
         }
-        sorted = merge.clone();
+        sorted = new ArrayList<>(merge);
         return merge;
     }
     private static class Worker implements Runnable{
-        private final int[] array;
-        private Function<int[],int[]> sort;
-        public int[] getArray() {return array;}
-        public Worker(int[] array, Function<int[], int[]> sort){
+        private final List<Integer> array;
+        private final Function<List<Integer>,List<Integer>> sort;
+        public List<Integer> getArray() {return array;}
+        public Worker(List<Integer> array, Function<List<Integer>, List<Integer>> sort){
             this.array=array;
             this.sort=sort;
         }
@@ -43,12 +60,12 @@ public class Multithreader {
         }
     }
 
-    static BiFunction<int[], Function<int[],int[]>, Worker> createWorker = Worker::new;
+    static BiFunction<List<Integer>, Function<List<Integer>,List<Integer>>, Worker> createWorker = Worker::new;
     static Function<Worker,Thread> createThread = Thread::new;
 
-    private static ArrayList<ArrayList<Integer>> split(int[] split, int threads){
-        int division = split.length/threads+1;
-        ArrayList<ArrayList<Integer>> partition = new ArrayList<ArrayList<Integer>>();
+    private static List<List<Integer>> split(List<Integer> split, int threads){
+        int division = split.size()/threads+1;
+        List<List<Integer>> partition = new ArrayList<>();
         for (int j = 0; j < threads; j++){
             partition.add(new ArrayList<Integer>());
         }
@@ -64,37 +81,37 @@ public class Multithreader {
         }
         return partition;
     }
-    public static int[] merge(int[] first, int[] second) {
+    public static List<Integer> merge(List<Integer> first,List<Integer> second) {
         if (first == null) {
             return second;
         }
         if (second == null) {
             return first;
         }
-        int[] result = new int[first.length + second.length];
+        List<Integer> result = Arrays.asList(new Integer[first.size()+second.size()]);
         int i=0;
         int j=0;
         int k=0;
-        while (i < first.length && j < second.length) {
-            if (first[i] <= second[j]) {
-                result[k]=first[i];
+        while (i < first.size() && j < second.size()) {
+            if (first.get(i) <= second.get(j)) {
+                result.set(k, first.get(i));
                 i++;
                 k++;
             } else {
-                result[k] = second[j];
+                result.set(k, second.get(j));
                 j++;
                 k++;
             }
-            if (i == first.length) {
-                while (j < second.length) {
-                    result[k]=second[j];
+            if (i == first.size()) {
+                while (j < second.size()) {
+                    result.set(k, second.get(j));
                     k++;
                     j++;
                 }
             }
-            if (j == second.length) {
-                while (i < first.length) {
-                    result[k]=first[i];
+            if (j == second.size()) {
+                while (i < first.size()) {
+                    result.set(k, first.get(i));
                     k++;
                     i++;
                 }

@@ -1,70 +1,72 @@
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 public class Tester {
+    //TODO Fix Multithreading, Fix Merge Sort
     public static void main(String[] args){
-        int size = 1_000_000;
+        int size = 1_000_000_000;
         int repeat = 1;
         boolean print = false;
-        boolean multithread = true;
+        boolean multithread = false;
 
-        test(MergeSort::sort, size, repeat, print, multithread);
+        test(QuickSort::sort, size, repeat, print, multithread);
 
     }
-    public static boolean testSorted(int[] array){
-        for (int i = 1; i < array.length; i++){
-            if (array[i-1] < array[i]){
+    public static boolean testSorted(List<Integer> array){
+        for (int i = 1; i < array.size(); i++){
+            if (array.get(i-1).compareTo(array.get(i)) < 0){
                 return false;
             }
         }
         return true;
     }
-    public static boolean sameList(int[] first, int[] second){
-        if (!testSorted(first)) {
-            QuickInsertionSort.sort(first);
-        }
-        if (!testSorted(second)) {
-            QuickInsertionSort.sort(second);
-        }
-        return Arrays.equals(first, second);
+    public static boolean sameList(List<Integer> first, List<Integer> second){
+        return QuickInsertionSort.sort(deepClone(first)).equals(QuickInsertionSort.sort(deepClone(second)));
     }
-    public static BigDecimal average(ArrayList<Long> array){
+    public static BigDecimal average(List<Long> array){
         BigDecimal sum = BigDecimal.valueOf(0);
         for (long num : array){
             sum = sum.add(BigDecimal.valueOf(num));
         }
         return sum.divide(BigDecimal.valueOf(array.size()));
     }
-    public static void test(Function<int[], int[]> sort, int size, int repeat, boolean print, boolean multithread){
+    public static void test(Function<List<Integer>, List<Integer>> sort, int size, int repeat, boolean print, boolean multithread){
         Random random = new Random();
-        ArrayList<Long> avg = new ArrayList<Long>();
-        int threads = 8;
-        int[] data = {0};
+        List<Long> avg = new ArrayList<Long>();
+        int threads = 2;
+        List<Integer> data = new ArrayList<>();
 
         //tests to see if the sort works
-        int[] numtest = random.ints(10, 1, 10).toArray();
-        int[] numtest2 = numtest.clone();
-        numtest2 = sort.apply(numtest2);
+        List<Integer> numtest = random.ints(10, 1, 10).boxed().collect(Collectors.toList());
+        List<Integer> numtest2 = deepClone(numtest);
+        if (multithread) {
+            numtest2 = Multithreader.multithread(numtest2, threads, sort);
+        }
+        else{
+            numtest2 = sort.apply(numtest2);
+        }
         if (print) {
-            System.out.println("Test 1 to see if the sort changes the elements: " + Arrays.toString(numtest));
-            System.out.println("Test 2 to see if the sort changes the elements: " + Arrays.toString(numtest2));
+            System.out.println("Test 1 to see if the sort changes the elements: " + (numtest));
+            System.out.println("Test 2 to see if the sort changes the elements: " + (numtest2));
         }
         if (!sameList(numtest,numtest2)){
             System.out.println("The sort changed the list. Test Cancelled");
             return;
         }
         if (print){
-            System.out.println("Input of the sort: " + Arrays.toString(numtest));
-            System.out.println("Output of the sort: " + Arrays.toString(numtest2));
+            System.out.println("Input of the sort: " + (numtest));
+            System.out.println("Output of the sort: " + (numtest2));
         }
         if (!testSorted(numtest2)){
             System.out.println("The sort didn't correct sort in descending order. Test Cancelled");
-            System.out.println("Input of the sort: " + Arrays.toString(numtest));
-            System.out.println("Output of the sort: " + Arrays.toString(numtest2));
+            System.out.println("Input of the sort: " + (numtest));
+            System.out.println("Output of the sort: " + (numtest2));
             return;
         }
 
@@ -76,7 +78,7 @@ public class Tester {
                 j += 1000;
             }
             long startTime;
-            data = random.ints(size, 1, size * 2).toArray();
+            data = random.ints(10, 1, 10).boxed().collect(Collectors.toList());
             if (multithread) {
                 startTime = System.nanoTime();
                 data = Multithreader.multithread(data, threads, sort);
@@ -93,5 +95,10 @@ public class Tester {
         BigDecimal time = average(avg);
         //divide by 1000000 to get milliseconds.
         System.out.println("Sort took " + time.divide(BigDecimal.valueOf(1000000)) + " ms on average of " + repeat + " attempts for a list of size " + size + ".");
+    }
+    private static List<Integer> deepClone(List<Integer> list){
+        Integer[] numArray1 = list.toArray(new Integer[0]);
+        List<Integer> copy = new ArrayList<>(Arrays.asList(numArray1));
+        return copy;
     }
 }

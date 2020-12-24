@@ -1,10 +1,14 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class MergeSort {
-    public static int[] sort(int[] sorted) {
-        int[] temp = new int[sorted.length];
-        mergeSort(sorted,0, sorted.length-1, temp);
+    public static List<Integer> sort(List<Integer> sorted) {
+        List<Integer> temp =  new ArrayList<>();
+        mergeSort(sorted,0, sorted.size()-1, temp);
         return sorted;
     }
-    private static void mergeSort(int[] array, int begin, int end, int[] temp){
+    private static void mergeSort(List<Integer> array, int begin, int end, List<Integer> temp){
         if (begin < end){
             int mid = (int) Math.floor((begin + end)/2);
             mergeSort(array,begin,mid, temp);
@@ -12,18 +16,17 @@ public class MergeSort {
             merge(array,begin,end,temp);
         }
     }
-    private static  void merge(int[] array, int begin, int end, int[] temp){
+    private static void merge(List<Integer> numArray, int begin, int end, List<Integer> tempAr){
+        Integer[] array = numArray.toArray(new Integer[0]);
+        Integer[] temp = tempAr.toArray(new Integer[0]);
         int size = end - begin;
-        int lstart = begin;
         int mid = (begin + end)/2;
         int rstart = mid+1;
-        int lend = mid;
-        int rend = end;
-        int lindex = lstart;
+        int lindex = begin;
         int rindex = rstart;
         int tindex = begin;
 
-        while(lindex <= lend && rindex <= rend){
+        while(lindex <= mid && rindex <= end){
             int right = array[rindex];
             int left = array[lindex];
             if (left > right){
@@ -36,16 +39,17 @@ public class MergeSort {
             }
             tindex++;
         }
-        while (lindex <= lend){
+        while (lindex <= mid){
             temp[tindex] = array[lindex];
             tindex++;
             lindex++;
         }
-        while (rindex <= rend){
+        while (rindex <= end){
             temp[tindex] = array[rindex];
             tindex++;
             rindex++;
         }
         System.arraycopy(temp,begin,array,begin,size+1);
+        numArray = new ArrayList<>(Arrays.asList(array));
     }
 }

@@ -1,25 +1,27 @@
+import java.util.List;
+
 public class InsertionSort {
-    public static int[] sort(int[] array){
-        for (int i = 1; i < array.length; i++){
-            int key = array[i];
+    public static List<Integer> sort(List<Integer> array){
+        for (int i = 1; i < array.size(); i++){
+            int key = array.get(i);
             int j = i-1;
-            while (j >= 0 && array[j] < key){
-                array[j+1] = array[j];
+            while (j >= 0 && array.get(j) < key){
+                array.set(j+1, array.get(j));
                 j--;
             }
-            array[j+1] = key;
+            array.set(j+1, key);
         }
         return array;
     }
-    public static int[] sort(int[] array, int begin, int end){
+    public static List<Integer> sort(List<Integer> array, int begin, int end){
         for (int i = begin+1; i <= end; i++){
-            int key = array[i];
+            int key = array.get(i);
             int j = i-1;
-            while (j >= begin && array[j] < key){
-                array[j+1] = array[j];
+            while (j >= begin && array.get(j) < key){
+                array.set(j+1, array.get(j));
                 j--;
             }
-            array[j+1] = key;
+            array.set(j+1, key);
         }
         return array;
     }
